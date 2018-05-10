@@ -7,16 +7,25 @@ import time
 gpio_pin0 = 18
 gpio_pin1 = 19
 
+#duty比 0~1の範囲で指定
+duty_ratio = 1
+
 pi = pigpio.pi()
 pi.set_mode(gpio_pin0, pigpio.OUTPUT)
 pi.set_mode(gpio_pin1, pigpio.OUTPUT)
 
-# GPIO18: 2Hz、duty比0.5
-pi.hardware_PWM(gpio_pin0, 2, 500000)
-# GPIO19: 8Hz、duty比0.1
-pi.hardware_PWM(gpio_pin1, 8, 100000)
+# 飛行時duty比 duty_ratio
+pi.hardware_PWM(gpio_pin0, 2, duty_ratio * 1000000)
 
-time.sleep(5)
+time.sleep()
+
+time.sleep(10)
+
+#duty比を線形に0まで落とす
+while duty_ratio > 0:
+    duty_ratio = duty_ratio - 0.01
+    pi.hardware_PWM(gpio_pin0, 2, duty_ratio * 1000000)
+    time.sleep(0.1)
 
 pi.set_mode(gpio_pin0, pigpio.INPUT)
 pi.set_mode(gpio_pin1, pigpio.INPUT)
