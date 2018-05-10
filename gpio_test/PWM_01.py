@@ -15,7 +15,7 @@ pi.set_mode(gpio_pin0, pigpio.OUTPUT)
 pi.set_mode(gpio_pin1, pigpio.OUTPUT)
 
 # 飛行時duty比 duty_ratio
-pi.hardware_PWM(gpio_pin0, 2, duty_ratio * 1000000)
+pi.hardware_PWM(gpio_pin0, 2, int(duty_ratio * 1000000))
 
 time.sleep(10)
 
