@@ -17,8 +17,6 @@ pi.set_mode(gpio_pin1, pigpio.OUTPUT)
 # 飛行時duty比 duty_ratio
 pi.hardware_PWM(gpio_pin0, 2, duty_ratio * 1000000)
 
-time.sleep()
-
 time.sleep(10)
 
 #duty比を線形に0まで落とす
