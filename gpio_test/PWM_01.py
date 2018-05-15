@@ -4,7 +4,7 @@
 import pigpio
 import time
 
-gpio_pin0 = 21
+gpio_pin0 = 10
 
 #duty比 0~1の範囲で指定
 duty_ratio = 0.5
