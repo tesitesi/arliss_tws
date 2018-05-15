@@ -25,7 +25,7 @@ servo.start(0)
 servo.ChangeDutyCycle(duty_ratio)
 time.sleep(10)
 
-while duty_ratio > 0
+while duty_ratio > 0:
     servo.ChangeDutyCycle(duty_ratio)
     time.sleep(0.1)
     duty_ratio = duty_ratio - 1
