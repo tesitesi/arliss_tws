@@ -30,7 +30,7 @@ while i < 10000:
     i = i + 1
 
 k = 0
-print"duty_ratio"
+print("duty_ratio")
 
 while duty_ratio > 0:
     while k < 100:
@@ -38,7 +38,7 @@ while duty_ratio > 0:
         time.sleep(0.001)
         k = k + 1
     k = 0
-    print"duty_ratio"
+    print("duty_ratio")
     duty_ratio = duty_ratio - 1
     
 servo.stop()
