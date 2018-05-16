@@ -22,13 +22,22 @@ servo = GPIO.PWM(gp_out, 50)
 servo.start(0)
 #time.sleep(1)
 
-servo.ChangeDutyCycle(duty_ratio)
-time.sleep(10)
+i = 0
+
+while i < 10000:
+    servo.ChangeDutyCycle(duty_ratio)
+    time.sleep(0.001)
+    i = i + 1
+
+k = 0
 
 while duty_ratio > 0:
-    servo.ChangeDutyCycle(duty_ratio)
-    time.sleep(0.1)
+    while k < 100:
+        servo.ChangeDutyCycle(duty_ratio)
+        time.sleep(0.001)
+        k = k + 1
+    k = 0
     duty_ratio = duty_ratio - 1
-
+    
 servo.stop()
 GPIO.cleanup()
