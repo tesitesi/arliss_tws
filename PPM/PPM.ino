@@ -5,8 +5,8 @@
 #define vol4 A3
 #define vol5 A4
 #define vol6 A5
-#define vol7 10
-#define vol8 8
+#define vol7 8
+#define vol8 10
 
 void setup() {
   Serial.begin(9600);
