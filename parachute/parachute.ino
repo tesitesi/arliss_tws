@@ -1,5 +1,5 @@
-int cds_Pin = 0;
-int pressure_Pin = 0;
+int cds_Pin = A6;
+int pressure_Pin = A4;
 int nichrome_Pin = 0;  //cdsピン番号
 int brightness = 0;
 int pressure_value = 0; //パラシュート展開判定用cds返り値

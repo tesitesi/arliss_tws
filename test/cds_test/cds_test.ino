@@ -1,4 +1,4 @@
-int cds_pin = A1;
+int cds_pin = A4;
 void setup() {
   Serial.begin(9600);
   pinMode(cds_pin,INPUT);
