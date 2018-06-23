@@ -8,15 +8,16 @@ void setup() {
 }
 
 void loop() {
-  value = EEPROM.read(a);
-
-  Serial.print(a);
-  Serial.print("\t");
-  Serial.print(value);
-  Serial.println();
-
-  a = a + 1;
-  if (a == 1024) a = 0;
-
-  delay(500);
+  while (a != 1024){
+    value = EEPROM.read(a);
+    Serial.print(a);
+    Serial.print("\t");
+    Serial.print(value);
+    Serial.println();
+    a = a + 1;
+    delay(1);
+  }
+  while(1) {
+    delay(1000000);
+  }
 }
