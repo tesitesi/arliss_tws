@@ -1,7 +1,8 @@
 #include <EEPROM.h>
 
 int a = 0;
-int value;
+int value1;
+int value2;
 
 void setup() {
   Serial.begin(9600);
@@ -9,12 +10,15 @@ void setup() {
 
 void loop() {
   while (a != 1024){
-    value = EEPROM.read(a);
-    Serial.print(a);
+    value1 = EEPROM.read(a);
+    value2 = EEPROM.read(a+1);
+    Serial.print(a/2);
     Serial.print("\t");
-    Serial.print(value);
+    Serial.print(value1);
+    Serial.print("\t");
+    Serial.print(value2);
     Serial.println();
-    a = a + 1;
+    a = a + 2;
     delay(1);
   }
   while(1) {
