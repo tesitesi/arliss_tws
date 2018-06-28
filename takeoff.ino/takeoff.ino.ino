@@ -1,31 +1,32 @@
-#define outpin A7
+#define outpin 13
+#define judgepin 2
 int var = 0;
 int i = 0;
 
 void setup() {
   Serial.begin(9600);
   pinMode(outpin,OUTPUT);
+  pinMode(judgepin,INPUT_PULLUP);
 }
 
 void loop() {
-  int ch[8];
-  ch[0] = 500; 
-  ch[1] = 1000; //elevator
-  ch[2] = 0;   //throttle
-  ch[3] = 500; //airlon
-  ch[4] = 500; 
-  ch[5] = 500; 
-  ch[6] = 500; 
+  int ch[8] = {500,500,0,500,500,500,500,0};
   switch (var) {
-    case 0:
-      ch[7] = 0; //fight mode
-      while (i<3000) {
+      case 0:
+      while (digitalRead(judgepin) == LOW) {
+        PPM(ch);
+      }
+      var ++;
+    case 1:
+      ch[1] = 1000; //elevator
+      ch[7] = 500; //fight mode
+      while (i<150) {
        PPM(ch); 
        i++;
       }
-      var = 1;
+      var ++;
       break;
-    case 1:
+    case 2:
       ch[7] = 1000; //flight mode 
       while(1){
         PPM(ch);
