@@ -1,5 +1,6 @@
 int cds_pin = A6;
-void setup() {
+void setup() {  
+//  analogReference(INTERNAL);
   Serial.begin(9600);
   pinMode(cds_pin,INPUT);
 }
