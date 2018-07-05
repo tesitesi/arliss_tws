@@ -1,4 +1,4 @@
-int cds_pin = A6;
+int cds_pin = A4;
 void setup() {  
 //  analogReference(INTERNAL);
   Serial.begin(9600);
