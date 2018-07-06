@@ -6,8 +6,9 @@ int nichrompin3 = 4;
 int nichrompin4 = 5;
 int cdsPin = A6;
 int pressurePin = A4;
-int wait_time = 100;
-int nichrom_time = 100;
+int wait_time = 300;
+int case_time = 120;
+int parachute_time = 180; //wait+parachuteで３本目溶断
 
 void setup() {
   Serial.begin(9600);
@@ -25,23 +26,25 @@ void loop() {
   }
   for (int i = 0; i < 1024; i+=2) {
     EEPROM.write(i, analogRead(cdsPin)/4);
-    EEPROM.write(i+1, analogRead(pressurePin)/4);
-    if (i == nichrom_time + 0) {
+    EEPROM.write(i+1, analogRead(pressurePin));
+    if (i == case_time*2 + 0) {
       digitalWrite(nichrompin1,HIGH);    
     }
-    else if (i == nichrom_time + 10) {
+    else if (i == case_time*2 + 10) {
       digitalWrite(nichrompin1,LOW);
       digitalWrite(nichrompin2,HIGH);       
     }
-    else if (i == nichrom_time + 20) {
-      digitalWrite(nichrompin2,LOW);
-      digitalWrite(nichrompin3,HIGH);    
+    else if (i == case_time*2 + 20) {
+      digitalWrite(nichrompin2,LOW);    
     }
-    else if (i == nichrom_time + 30) {
+    else if (i == parachute_time*2 + 0) {
+      digitalWrite(nichrompin3,HIGH);
+    }
+    else if (i == parachute_time*2 + 10) {
       digitalWrite(nichrompin3,LOW); 
       digitalWrite(nichrompin4,HIGH);
     }
-    else if (i == nichrom_time + 40) {
+    else if (i == parachute_time*2 + 20) {
       digitalWrite(nichrompin4,LOW);
     }
     delay(1000);
