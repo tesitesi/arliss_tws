@@ -2,6 +2,7 @@
 #define judgepin 2
 int var = 0;
 int i = 0;
+int nose_up_time = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -20,13 +21,14 @@ void loop() {
     case 1:
       ch[1] = 1000; //elevator
       ch[7] = 500; //fight mode
-      while (i<150) {
+      while (i<50*nose_up_time) {
        PPM(ch); 
        i++;
       }
       var ++;
       break;
     case 2:
+      ch[1] = 500; //elevator
       ch[7] = 1000; //flight mode 
       while(1){
         PPM(ch);
