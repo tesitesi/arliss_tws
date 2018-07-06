@@ -7,6 +7,7 @@ int nichrompin4 = 5;
 int cdsPin = A6;
 int pressurePin = A4;
 int wait_time = 100;
+int nichrom_time = 100;
 
 void setup() {
   Serial.begin(9600);
@@ -22,27 +23,30 @@ void loop() {
   for (int k=0; k < wait_time; k++) {
     delay(1000); 
   }
-   for (int i = 0; i < 1024; i+=2) {
+  for (int i = 0; i < 1024; i+=2) {
     EEPROM.write(i, analogRead(cdsPin)/4);
     EEPROM.write(i+1, analogRead(pressurePin)/4);
-    if (i == 0) {
+    if (i == nichrom_time + 0) {
       digitalWrite(nichrompin1,HIGH);    
     }
-    else if (i == 5) {
+    else if (i == nichrom_time + 10) {
       digitalWrite(nichrompin1,LOW);
       digitalWrite(nichrompin2,HIGH);       
     }
-    else if (i == 10) {
+    else if (i == nichrom_time + 20) {
       digitalWrite(nichrompin2,LOW);
       digitalWrite(nichrompin3,HIGH);    
     }
-    else if (i == 15) {
+    else if (i == nichrom_time + 30) {
       digitalWrite(nichrompin3,LOW); 
       digitalWrite(nichrompin4,HIGH);
     }
-    else if (i == 20) {
+    else if (i == nichrom_time + 40) {
       digitalWrite(nichrompin4,LOW);
     }
+    delay(1000);
+  }
+  while (1) {
     delay(1000);
   }
 }
