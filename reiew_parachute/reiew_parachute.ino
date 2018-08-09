@@ -6,9 +6,9 @@ int nichrompin3 = 4;
 int nichrompin4 = 5;
 int cdsPin = A6;
 int pressurePin = A4;
-int wait_time = 300;
-int case_time = 120;
-int parachute_time = 180; //wait+parachuteで３本目溶断
+int wait_time = 20;
+int case_time = 20;
+int parachute_time = 40; //wait+parachuteで３本目溶断
 
 void setup() {
   Serial.begin(9600);
