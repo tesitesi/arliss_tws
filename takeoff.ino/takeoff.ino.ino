@@ -1,5 +1,5 @@
 #define outpin 13
-#define judgepin 2
+#define signalpin 2
 int var = 0;
 int i = 0;
 int k = 0;
@@ -16,13 +16,14 @@ void loop() {
   int ch[8] = {500,500,0,500,500,500,500,0};
   switch (var) {
       case 0:
-      while (digitalRead(judgepin) == LOW) {
+      while (digitalRead(signalpin) == LOW) {
         PPM(ch);
       }
+      delay(2000);
       var ++;
     case 1:
       ch[1] = 0; //elevator
-      ch[7] = 500; //fight mode
+      ch[7] = 1000; //fight mode
       while (i<50*nose_up_time) {
        PPM(ch); 
        i++;

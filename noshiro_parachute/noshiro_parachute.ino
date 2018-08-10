@@ -4,6 +4,7 @@ int nichrompin1=2;
 int nichrompin2=3;
 int nichrompin3=4;
 int nichrompin4=5;
+int signalpin=6;
 int cdsPin=A6;
 int pressurePin=A4;
 int wait_time=20;
@@ -22,6 +23,7 @@ void setup() {
   pinMode(nichrompin2,OUTPUT);
   pinMode(nichrompin3,OUTPUT);
   pinMode(nichrompin4,OUTPUT);
+  pinMode(signalpin,OUTPUT);
 }
 
 void loop() {
@@ -32,13 +34,14 @@ void loop() {
         cds=analogRead(cdsPin);
         if (cds>brightness){
           cnt ++;
-          delay(1000);
+          delay(500);
         }else{
           cnt=0;
           Serial.print(cds);
         }
       }
       var=1;
+      digitalWrite(signalpin,HIGH);
     case 1:
       for (int i = 0; i < 1024; i+=2) {
         EEPROM.write(i, analogRead(cdsPin)/4);
@@ -48,9 +51,11 @@ void loop() {
         }
         else if (i==6) {
           digitalWrite(nichrompin1,LOW);
+        }
+        else if (i==8) {
           digitalWrite(nichrompin3,HIGH);       
         }
-        else if (i==12) {
+        else if (i==14) {
          digitalWrite(nichrompin3,LOW);    
         }
         delay(1000);
