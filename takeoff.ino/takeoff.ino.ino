@@ -1,52 +1,67 @@
 #define outpin 13
 #define signalpin 2
-int var = 0;
-int i = 0;
-int k = 0;
-int nose_up_time = 5;
-int throttol_time = 3;
+int var=0;
+int i=0;
+int k=0;
+int wait_time=2;
+int arming_time=4;
+int nose_up_time=5;
+int throttol_time=3;
 
 void setup() {
   Serial.begin(9600);
   pinMode(outpin,OUTPUT);
-  pinMode(judgepin,INPUT_PULLUP);
+  pinMode(signalpin,INPUT_PULLUP);
 }
 
 void loop() {
-  int ch[8] = {500,500,0,500,500,500,500,0};
+  int ch[8]={500,500,0,500,500,500,500,0};
   switch (var) {
       case 0:
-      while (digitalRead(signalpin) == LOW) {
-        PPM(ch);
+       while (digitalRead(signalpin) == LOW) {
+          PPM(ch);
+        }
+        while (i<50*wait_time) {
+          PPM(ch);
+          i++;
+        }
+        var++;
+        break;
+       
+      /*ARMING*/
+      case 1:
+        ch[3]=1000;//rudder
+        ch[7]=1000; //fight mode==auto
+        while (i<50*arming_time) {
+          PPM(ch);
+          i++;
+        }
+        var++;
+        break;
+      case 2:
+        ch[1]=0; //elevator
+        while (i<50*nose_up_time) {
+        PPM(ch); 
+        i++;
+        }
+        var ++;
+        break;
+      case 3:
+        ch[1]=0;
+        ch[2]=300; //throttol
+        while (k<50*throttol_time) {
+          PPM(ch);
+          k++;
+        }
+        var ++;
+        break;
+      case 4:
+        ch[1]=500; //elevator
+        ch[2]=0; //throttol
+        while(1){
+          PPM(ch);
+          k ++;
       }
-      delay(2000);
-      var ++;
-    case 1:
-      ch[1] = 0; //elevator
-      ch[7] = 1000; //fight mode
-      while (i<50*nose_up_time) {
-       PPM(ch); 
-       i++;
-      }
-      var ++;
-      break;
-    case 2:
-      ch[1] = 0;
-      ch[2] = 300; //throttol
-      while (k<50*throttol_time) {
-        PPM(ch);
-        k++;
-      }
-      var ++;
-      break;
-    case 3:
-      ch[1] = 500; //elevator
-      ch[2] = 0; //throttol
-      ch[7] = 1000; //flight mode 
-      while(1){
-        PPM(ch);
-        k ++;
-     }
   }
 }
 
