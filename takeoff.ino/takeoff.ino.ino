@@ -61,7 +61,8 @@ void loop() {
         while(1){
           PPM(ch);
           k ++;
-      }
+        }
+        break;
   }
 }
 

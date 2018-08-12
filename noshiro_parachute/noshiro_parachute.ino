@@ -28,7 +28,7 @@ void setup() {
 
 void loop() {
   switch(var){
-    case 0:
+    case 0: // start--injection
       cnt=0;
       while(cnt<2){
         cds=analogRead(cdsPin);
@@ -42,7 +42,8 @@ void loop() {
       }
       var=1;
       digitalWrite(signalpin,HIGH);
-    case 1:
+      break;
+    case 1: // tegusu-cut
       for (int i = 0; i < 1024; i+=2) {
         EEPROM.write(i, analogRead(cdsPin)/4);
         EEPROM.write(i+1, analogRead(pressurePin));
@@ -61,9 +62,11 @@ void loop() {
         delay(1000);
       }
       var=2;
-    case 2:
+      break;
+    case 2: // end, just wait
       while (1) {
         delay(1000);
       }
+      break;
   }    
 }
