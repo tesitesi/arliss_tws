@@ -1,0 +1,4 @@
+*~        //これは最初から入ってる
+.DS_Store //これも最初から入ってる
+node_modules/
+bower_components/
