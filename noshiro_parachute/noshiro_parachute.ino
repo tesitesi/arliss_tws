@@ -4,7 +4,7 @@ int nichrompin1=2;
 int nichrompin2=3;
 int nichrompin3=4;
 int nichrompin4=5;
-int signalpin=6;
+int signalpin=7;
 int cdsPin=A6;
 int pressurePin=A4;
 int wait_time=20;
@@ -24,6 +24,7 @@ void setup() {
   pinMode(nichrompin3,OUTPUT);
   pinMode(nichrompin4,OUTPUT);
   pinMode(signalpin,OUTPUT);
+  digitalWrite(signalpin,LOW);
 }
 
 void loop() {

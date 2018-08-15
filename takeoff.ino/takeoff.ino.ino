@@ -4,9 +4,10 @@ int var=0;
 int i=0;
 int k=0;
 int wait_time=2;
-int arming_time=4;
+int arming_time=3;
 int nose_up_time=5;
 int throttol_time=3;
+int ch[8]={500,500,0,500,500,500,500,0};
 
 void setup() {
   Serial.begin(9600);
@@ -15,48 +16,57 @@ void setup() {
 }
 
 void loop() {
-  int ch[8]={500,500,0,500,500,500,500,0};
   switch (var) {
       case 0:
+       Serial.println("case0 wait");
        while (digitalRead(signalpin) == LOW) {
+          Serial.println("loop");
           PPM(ch);
         }
         while (i<50*wait_time) {
           PPM(ch);
           i++;
         }
+        i = 0;
         var++;
         break;
        
       /*ARMING*/
       case 1:
+        Serial.println("case1 arm");
         ch[3]=1000;//rudder
-        ch[7]=1000; //fight mode==auto
         while (i<50*arming_time) {
           PPM(ch);
           i++;
         }
+        i = 0;
         var++;
         break;
       case 2:
-        ch[1]=500; //elevator
+        Serial.println("case2 elevator only");
+        ch[1]=0; //elevator
+        ch[3]=500;
+        ch[7]=1000; //fight mode==auto
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;
         }
+        i = 0;
         var ++;
         break;
       case 3:
-        ch[1]=500;
+        Serial.println("case3 elevator&throttle");
         ch[2]=300; //throttol
         while (k<50*throttol_time) {
           PPM(ch);
           k++;
         }
+        i = 0;
         var ++;
         break;
       case 4:
-        ch[1]=50; //elevator
+        Serial.println("case4 fly");
+        ch[1]=500; //elevator
         ch[2]=0; //throttol
         while(1){
           PPM(ch);
@@ -67,12 +77,12 @@ void loop() {
 }
 
 void PPM(int ch[8]){
-  for (int i=0; i<=7; i++){
-    onepulth(ch[i]);
+  for (int n=0; n<=7; n++){
+    onepulth(ch[n]);
   }
   int sum = 0;
-  for (int i=0; i<=7; i++){
-    sum += ch[i];
+  for (int n=0; n<=7; n++){
+    sum += ch[n];
   }
   onepulth(12000 - sum);//20000-8000(最小信号)
 }
