@@ -39,7 +39,7 @@ void loop() {
         var++;
         break;
       case 2:
-        ch[1]=500(1-40/45); //elevator
+        ch[1]=500; //elevator
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;
@@ -47,7 +47,7 @@ void loop() {
         var ++;
         break;
       case 3:
-        ch[1]=500(1-40/45);
+        ch[1]=500;
         ch[2]=300; //throttol
         while (k<50*throttol_time) {
           PPM(ch);
@@ -56,7 +56,7 @@ void loop() {
         var ++;
         break;
       case 4:
-        ch[1]=500; //elevator
+        ch[1]=945; //elevator
         ch[2]=0; //throttol
         while(1){
           PPM(ch);
