@@ -56,7 +56,7 @@ void loop() {
         var ++;
         break;
       case 4:
-        ch[1]=945; //elevator
+        ch[1]=50; //elevator
         ch[2]=0; //throttol
         while(1){
           PPM(ch);
