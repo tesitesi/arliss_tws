@@ -44,7 +44,7 @@ void loop() {
         break;
       case 2:
         Serial.println("case2 elevator only");
-        ch[1]=1100; //elevator
+        ch[1]=0; //elevator
         ch[3]=500;
         ch[7]=1000; //fight mode==auto
         while (i<50*nose_up_time) {
@@ -54,6 +54,7 @@ void loop() {
         i = 0;
         var ++;
         break;
+      /*
       case 3:
         Serial.println("case3 elevator&throttle");
         ch[2]=300; //throttol
@@ -64,9 +65,10 @@ void loop() {
         i = 0;
         var ++;
         break;
-      case 4:
+        */
+      case 3:
         Serial.println("case4 fly");
-        ch[1]=100; //elevator
+        ch[1]=500; //elevator
         ch[2]=0; //throttol
         ch[7]=1000;
         while(1){
