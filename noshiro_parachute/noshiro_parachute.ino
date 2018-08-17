@@ -7,12 +7,14 @@ int nichrompin4=5;
 int signalpin=7;
 int cdsPin=A6;
 int pressurePin=A4;
+int first_wait=10;
 int wait_time=20;
 int case_time=20;
 int parachute_time=40; //wait+parachuteで３本目溶断
+int k=0;
 int var=0;
 int cds;
-int brightness=200*4;
+int brightness=700;
 int cnt;
 unsigned long timer;
 
@@ -28,6 +30,10 @@ void setup() {
 }
 
 void loop() {
+  while (k<first_wait) {
+    delay(1000);
+    k++;
+  }
   switch(var){
     case 0: // start--injection
       cnt=0;
@@ -36,7 +42,6 @@ void loop() {
         if (cds>brightness){
           cnt ++;
           delay(500);
-        }else{
           cnt=0;
           Serial.print(cds);
         }

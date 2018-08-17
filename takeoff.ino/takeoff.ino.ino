@@ -44,7 +44,7 @@ void loop() {
         break;
       case 2:
         Serial.println("case2 elevator only");
-        ch[1]=0; //elevator
+        ch[1]=900; //elevator
         ch[3]=500;
         ch[7]=1000; //fight mode==auto
         while (i<50*nose_up_time) {
