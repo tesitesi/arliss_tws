@@ -3,7 +3,7 @@
 int var=0;
 int i=0;
 int k=0;
-int wait_time=2;
+int wait_time=60;
 int arming_time=3;
 int nose_up_time=2;
 int throttol_time=0;
@@ -47,6 +47,7 @@ void loop() {
         ch[1]=900; //elevator
         ch[3]=500;
         ch[7]=1000; //fight mode==auto
+        Serial.println('auto');
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;

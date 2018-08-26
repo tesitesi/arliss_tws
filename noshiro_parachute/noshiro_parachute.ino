@@ -7,14 +7,14 @@ int nichrompin4=5;
 int signalpin=7;
 int cdsPin=A6;
 int pressurePin=A4;
-int first_wait=10;
+int first_wait=60;
 int wait_time=20;
 int case_time=20;
 int parachute_time=40; //wait+parachuteで３本目溶断
 int k=0;
 int var=0;
 int cds;
-int brightness=700;
+int brightness=750;
 int cnt;
 unsigned long timer;
 
@@ -30,10 +30,12 @@ void setup() {
 }
 
 void loop() {
+  digitalWrite(signalpin,LOW);
   while (k<first_wait) {
     delay(1000);
     k++;
   }
+  Serial.print("wait finish");
   switch(var){
     case 0: // start--injection
       cnt=0;
@@ -42,25 +44,33 @@ void loop() {
         if (cds>brightness){
           cnt ++;
           delay(500);
+          Serial.print(cds);
+          Serial.println(""); 
+        }
+        else{
           cnt=0;
           Serial.print(cds);
+          Serial.println(""); 
         }
       }
       var=1;
       digitalWrite(signalpin,HIGH);
       break;
     case 1: // tegusu-cut
+      Serial.print("case1");
       for (int i = 0; i < 1024; i+=2) {
         EEPROM.write(i, analogRead(cdsPin)/4);
         EEPROM.write(i+1, analogRead(pressurePin));
         if (i==0) {
-          digitalWrite(nichrompin1,HIGH);    
+          digitalWrite(nichrompin1,HIGH);
+          Serial.print("nichrom1");
         }
         else if (i==6) {
           digitalWrite(nichrompin1,LOW);
         }
         else if (i==8) {
-          digitalWrite(nichrompin3,HIGH);       
+          digitalWrite(nichrompin3,HIGH);  
+          Serial.print("nichrom3");     
         }
         else if (i==14) {
          digitalWrite(nichrompin3,LOW);    
