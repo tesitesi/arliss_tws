@@ -16,6 +16,8 @@
 #define nichrompin1 2
 #define nichrompin2 3
 #define nichrompin3 4
+#define nichrompin3 5
+#define nichrompin4 6
 
 #define signalpin   7
 #define brightness 700 //放出判定のCdS値
@@ -26,11 +28,15 @@ unsigned long Press, Temp;  // 圧力および温度の変換値を保存する�
 float latitude=0;
 float longtitude=0;
 float alt=0; 
+boolean Timer = false;     //Timer起動でtrue
 boolean ReleaseJg = false; //ケース放出時にtrue
 boolean HightJg = false;   //一定高度以下でtrue
 
+int now;
+unsigned long time;
+
 TinyGPSPlus gps;
-SoftwareSerial mySerial(5, 6); // RX, TX
+SoftwareSerial mySerial(8 ,9); // RX, TX
 
 void setup() {
   while (!Serial) {
@@ -51,14 +57,15 @@ void setup() {
   pinMode(nichrompin1,OUTPUT);
   pinMode(nichrompin2,OUTPUT);
   pinMode(nichrompin3,OUTPUT);
+  pinMode(nichrompin4,OUTPUT);
 
-   delay(3000) ;                        // 3Sしたら開始
-    CoefficientRead() ;                 // メモリーマップから係数を読み出して置く
+  delay(3000) ;                        // 3Sしたら開始
 }
 
 void loop() {
   cdsJg();
   Hight_Judge();
+  Time();
   GPS();
   if (ReleaseJg == true) {
     if (HightJg ==true) {
@@ -70,8 +77,21 @@ void loop() {
  * ケース放出判定
  */
 void cdsJg() {
-  if (analogRead(cds_Pin) > brightness) {
+  int i=0;
+  while (i<10) {
+    if (analogRead(cds_Pin) > brightness) {
+      i++;
+      GPS();
+    }
+    else{
+      i=0;
+      GPS();
+    }
     ReleaseJg = true;
+  }
+  if (Timer==false){
+    now = millis()-10000;
+    Timer = true;
   }
 }
 
@@ -190,32 +210,41 @@ float AltitudeCalc(float pressure,int Difference)
 }
 
 // 高度判定
-
 void Hight_Judge() {
   if (alt_() < hight) {
     HightJg = true;
   }
 }
 
-//ニクロム線溶断
+//てぐす溶断
 void NichromCut() {
   int case_time = 20;
   digitalWrite(signalpin,HIGH);           //機体側Arduinoへの信号
-  for (int i = 0; i < 1024; i+=2) {
+  for (int i = 0; i < 1024; i++) {
     GPS();
     if (i==0) {
         digitalWrite(nichrompin1,HIGH);
+        Serial.println("nichrom1");
+      }
+      else if (i==3) {
+        digitalWrite(nichrompin1,LOW);
+        digitalWrite(nichrompin2,HIGH);
       }
       else if (i==6) {
-        digitalWrite(nichrompin1,LOW);
+        digitalWrite(nichrompin2,LOW);
       }
-      else if (i==8) {
+      else if (i==7) {
         digitalWrite(nichrompin3,HIGH);  
         Serial.print("nichrom3");     
       }
-      else if (i==14) {
-        digitalWrite(nichrompin3,LOW);    
+      else if (i==10) {
+        digitalWrite(nichrompin3,LOW);
+        digitalWrite(nichrompin4,HIGH);   
       }
+      else if (i==13) {
+        digitalWrite(nichrompin4,LOW);
+      }
+      
       delay(1000);
   }  
 }
@@ -232,5 +261,13 @@ void GPS() {
       Serial.print("ALT="); Serial.println(gps.altitude.meters()); 
     }
   }     
+}
+
+void Time() {
+  if (ReleaseJg==true) {
+    if (now-millis()>300*1000) {
+      HightJg=true;
+    }
+  }
 }
 
