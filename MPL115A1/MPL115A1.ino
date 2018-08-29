@@ -19,7 +19,10 @@ void setup()
      delay(3000) ;                        // 3Sしたら開始
      CoefficientRead() ;                  // メモリーマップから係数を読み出して置く
 }
-void loop()
+void loop() {
+ 1; 
+}
+float GPS()
 {
      int i ;
      float ans ;
@@ -42,6 +45,7 @@ void loop()
      Serial.println(" m") ;
 
      delay(1000) ;                        // １秒後に繰り返す
+     return ans;
 }
 // メモリーマップから係数を読み出す処理
 void CoefficientRead()
