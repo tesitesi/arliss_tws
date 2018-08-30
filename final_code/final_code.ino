@@ -18,22 +18,19 @@
 #define nichrompin3 4
 #define nichrompin3 5
 #define nichrompin4 6
-
 #define signalpin   7
 #define brightness 700 //放出判定のCdS値
 #define hight 1000     //放出高度
 
-float a0, b1, b2, c12;      // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
-unsigned long Press, Temp;  // 圧力および温度の変換値を保存する変数
-float latitude=0;
-float longtitude=0;
-float alt=0; 
-boolean Timer = false;     //Timer起動でtrue
-boolean ReleaseJg = false; //ケース放出時にtrue
-boolean HightJg = false;   //一定高度以下でtrue
-
 int now;
+float a0, b1, b2, c12;      // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
+float h_pre=0;              // 1つ前のGPS高度を格納
+boolean ReleaseJg = false;  // ケース放出時にtrue
+boolean HightJg = false;    // 2回連続一定高度以下でtrue
+boolean HightSW = false;    // 1回一定高度以下でtrue
+
 unsigned long time;
+unsigned long Press, Temp;  // 圧力および温度の変換値を保存する変数
 
 TinyGPSPlus gps;
 SoftwareSerial mySerial(8 ,9); // RX, TX
@@ -63,7 +60,9 @@ void setup() {
 }
 
 void loop() {
-  cdsJg();
+  if (ReleaseJg = false) {
+    cdsJg();
+  }
   Hight_Judge();
   Time();
   GPS();
@@ -89,10 +88,7 @@ void cdsJg() {
     }
     ReleaseJg = true;
   }
-  if (Timer==false){
-    now = millis()-10000;
-    Timer = true;
-  }
+  now = millis()-10000; //放出時の時間を記録
 }
 
 float alt_() {
@@ -209,10 +205,24 @@ float AltitudeCalc(float pressure,int Difference)
    return h;
 }
 
-// 高度判定
+// 高度判定 2回連続一定高度以下でHightJG=true
 void Hight_Judge() {
-  if (alt_() < hight) {
-    HightJg = true;
+  float h = alt_();
+  if (abs(h_pre-h)<100) {     //外れ値の除外
+    if (h < hight) {
+      if (HightSW = false) {
+        HightSW = true;
+      }
+      else {
+        HightJg = true;
+      }
+    }
+    else {
+      HightSW = false;
+    }
+  }
+  else {
+    HightSW = false;
   }
 }
 
@@ -263,6 +273,7 @@ void GPS() {
   }     
 }
 
+//放出から一定時間で強制的に展開シーケンスへ移行
 void Time() {
   if (ReleaseJg==true) {
     if (now-millis()>300*1000) {

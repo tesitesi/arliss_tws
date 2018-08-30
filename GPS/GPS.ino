@@ -3,9 +3,9 @@
 #include <SoftwareSerial.h>
 #define SIZE 15
 
-float latitude=0;
-float longtitude=0;
-float alt=0; 
+//float latitude=0;
+//float longtitude=0;
+//float alt=0; 
 TinyGPSPlus gps;
 SoftwareSerial mySerial(5, 6); // RX, TX
 //TinyGPSCustom magneticVariation(gps, "GPRMC", 10);
