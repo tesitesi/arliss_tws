@@ -256,7 +256,11 @@ void NichromCut() {
       }
       
       delay(1000);
-  }  
+  }
+  while (1) {
+    GPS();
+    delay(1000);  
+  }
 }
 
 void GPS() {
