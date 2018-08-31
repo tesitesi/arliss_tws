@@ -9,7 +9,7 @@ unsigned long Press , Temp ;              // 圧力および温度の変換値�
 void setup()
 {
      // シリアルモニターの設定
-     Serial.begin(9600) ;
+     Serial.begin(115200) ;
      // ＳＰＩの初期化
      SPI.begin() ;                        // ＳＰＩを行う為の初期化
      SPI.setBitOrder(MSBFIRST) ;          // ビットオーダー
@@ -20,7 +20,7 @@ void setup()
      CoefficientRead() ;                  // メモリーマップから係数を読み出して置く
 }
 void loop() {
- 1; 
+ GPS(); 
 }
 float GPS()
 {
