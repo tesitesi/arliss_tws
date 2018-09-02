@@ -3,14 +3,14 @@
 int var=0;
 int i=0;
 int k=0;
-int wait_time=60;
+int wait_time=10;
 int arming_time=3;
 int nose_up_time=2;
 int throttol_time=0;
 int ch[8]={500,900,0,500,500,500,500,0};
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(outpin,OUTPUT);
   pinMode(signalpin,INPUT_PULLUP);
 }
@@ -23,6 +23,7 @@ void loop() {
           Serial.println("loop");
           PPM(ch);
         }
+        Serial.println("Hello,world!");
         while (i<50*wait_time) {
           PPM(ch);
           i++;
@@ -47,7 +48,7 @@ void loop() {
         ch[1]=900; //elevator
         ch[3]=500;
         ch[7]=1000; //fight mode==auto
-        Serial.println('auto');
+        Serial.println("auto");
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;

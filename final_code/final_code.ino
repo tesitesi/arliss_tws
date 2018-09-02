@@ -59,7 +59,7 @@ void setup() {
 
   //attachInterrupt(0, GPS,RISING );
 
-  delay(3000) ;                        // 3Sしたら開始
+  delay(60000) ;                        // 60Sしたら開始
   CoefficientRead() ;
 }
 
@@ -279,10 +279,10 @@ void NichromCut() {
       }
       else if (i==13) {
         digitalWrite(nichrompin4,LOW);
+        Serial.println("nichrom cutting finish");
       }      
       delay(1000);
   }
-  Serial.println("nichrom cutting finish");
   while (1) {
     GPS();
     delay(1000);  
@@ -311,6 +311,7 @@ void GPS() {
     }
   }     
 }
+
 //放出から一定時間で強制的に展開シーケンスへ移行
 void Time() {
   if (ReleaseJg==true) {
