@@ -85,7 +85,7 @@ void loop() {
  */
 void cdsJg() {
   int i=0;
-  while (i<10) {
+  while (i<3) {
     Serial.println(analogRead(cds_Pin));
     if (analogRead(cds_Pin) > brightness) {
       if (FirstReSW==false) {
@@ -268,7 +268,9 @@ void NichromCut() {
       }
       else if (i==6) {
         digitalWrite(nichrompin2,LOW);
+        Serial.println("nichrom cutting finish");
       }
+      /*
       else if (i==7) {
         digitalWrite(nichrompin3,HIGH);  
         Serial.println("nichrom3");     
@@ -278,9 +280,9 @@ void NichromCut() {
         digitalWrite(nichrompin4,HIGH);   
       }
       else if (i==13) {
-        digitalWrite(nichrompin4,LOW);
-        Serial.println("nichrom cutting finish");
-      }      
+        digitalWrite(nichrompin4,LOW);    
+      }
+      */      
       delay(1000);
   }
   while (1) {
