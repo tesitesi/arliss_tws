@@ -47,8 +47,8 @@ void loop() {
         Serial.println("case2 elevator only");
         ch[1]=900; //elevator
         ch[3]=500;
-        ch[7]=1000; //fight mode==auto
-        Serial.println("auto");
+        //ch[7]=1000; //fight mode==auto
+        //Serial.println("auto");
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;
@@ -72,7 +72,7 @@ void loop() {
         Serial.println("case4 fly");
         ch[1]=500; //elevator
         ch[2]=0; //throttol
-        ch[7]=1000;
+        //ch[7]=1000;
         while(1){
           PPM(ch);
           i ++;
