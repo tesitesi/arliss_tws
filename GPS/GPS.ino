@@ -6,7 +6,7 @@
 //float longtitude=0;
 //float alt=0; 
 TinyGPSPlus gps;
-SoftwareSerial mySerial(8, 9); // RX, TX
+SoftwareSerial mySerial(2, 3); // RX, TX
 
 unsigned long time;
 boolean SW=false;

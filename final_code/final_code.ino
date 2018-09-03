@@ -12,14 +12,15 @@
 
 #define AVE_NUM    20   // 圧力・温度のＡ／Ｄ変換値を平均化する回数
 #define H_CORRECT   0    
-#define cds_Pin A6
-#define nichrompin1 3
-#define nichrompin2 4
-#define nichrompin3 5
-#define nichrompin4 6
-#define signalpin   7
-#define brightness 700 //放出判定のCdS値
-#define hight 1000     //放出高度
+#define cds_Pin A7
+#define nichrompin1 A3
+#define nichrompin2 A2
+#define nichrompin3 A1
+#define nichrompin4 A0
+#define signalpin   6
+#define LoRaSW      7
+#define brightness 600 //放出判定のCdS値
+#define hight 100     //放出高度
 
 float a0, b1, b2, c12;      // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
 float h_pre=0;              // 1つ前のGPS高度を格納
@@ -34,7 +35,7 @@ unsigned long time;
 unsigned long Press, Temp;  // 圧力および温度の変換値を保存する変数
 
 TinyGPSPlus gps;
-SoftwareSerial mySerial(8 ,9); // RX, TX
+SoftwareSerial mySerial(2 ,3); // RX, TX
 
 void setup() {
   Serial.begin(115200);
@@ -56,15 +57,19 @@ void setup() {
   pinMode(nichrompin2,OUTPUT);
   pinMode(nichrompin3,OUTPUT);
   pinMode(nichrompin4,OUTPUT);
+  pinMode(signalpin,OUTPUT);
+  pinMode(LoRaSW,OUTPUT);
+  digitalWrite(signalpin,LOW);
+  digitalWrite(LoRaSW,HIGH);
 
   //attachInterrupt(0, GPS,RISING );
 
-  delay(60000) ;                        // 60Sしたら開始
+  delay(20000) ;                        // 60Sしたら開始
   CoefficientRead() ;
 }
 
 void loop() {
-  Serial.println("");
+  Serial.println("a");
   //Serial.print("ReleaseJg=");
   //Serial.println(ReleaseJg);
   if (ReleaseJg == 0) {
@@ -76,6 +81,7 @@ void loop() {
   GPS();
   if (ReleaseJg == true) {
     if (HightJg ==true) {
+      digitalWrite(signalpin,HIGH);
       NichromCut();
     }
   }
@@ -93,12 +99,12 @@ void cdsJg() {
       FirstReSW=true;
     }
       i++;
-      GPS();
+     // GPS();
       delay(1000);
     }
     else{
       i=0;
-      GPS();
+     // GPS();
       FirstReSW=false;
       delay(1000);
     }
@@ -270,7 +276,7 @@ void NichromCut() {
         digitalWrite(nichrompin2,LOW);
         Serial.println("nichrom cutting finish");
       }
-      /*
+      
       else if (i==7) {
         digitalWrite(nichrompin3,HIGH);  
         Serial.println("nichrom3");     
@@ -282,7 +288,7 @@ void NichromCut() {
       else if (i==13) {
         digitalWrite(nichrompin4,LOW);    
       }
-      */      
+            
       delay(1000);
   }
   while (1) {

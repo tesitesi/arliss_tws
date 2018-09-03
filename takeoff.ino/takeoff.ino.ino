@@ -3,7 +3,7 @@
 int var=0;
 int i=0;
 int k=0;
-int wait_time=10;
+int wait_time=6;
 int arming_time=3;
 int nose_up_time=2;
 int throttol_time=0;
@@ -47,13 +47,13 @@ void loop() {
         Serial.println("case2 elevator only");
         ch[1]=900; //elevator
         ch[3]=500;
-        //ch[7]=1000; //fight mode==auto
-        //Serial.println("auto");
+        ch[7]=1000; //fight mode==auto
+        Serial.println("auto");
         while (i<50*nose_up_time) {
         PPM(ch); 
         i++;
         }
-        i = 0;
+        //i=0;
         var ++;
         break;
       /*
@@ -72,7 +72,7 @@ void loop() {
         Serial.println("case4 fly");
         ch[1]=500; //elevator
         ch[2]=0; //throttol
-        //ch[7]=1000;
+        ch[7]=1000;
         while(1){
           PPM(ch);
           i ++;
