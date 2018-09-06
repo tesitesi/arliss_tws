@@ -20,7 +20,7 @@
 #define signalpin   6
 #define LoRaSW      7
 #define brightness 600 //放出判定のCdS値
-#define hight 100     //放出高度
+#define hight 1000     //放出高度
 
 float a0, b1, b2, c12;      // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
 float h_pre=0;              // 1つ前のGPS高度を格納
@@ -38,6 +38,12 @@ TinyGPSPlus gps;
 SoftwareSerial mySerial(2 ,3); // RX, TX
 
 void setup() {
+  /*
+  pinMode(4,INPUT_PULLUP);
+  while (digitalRead(4)==LOW) {
+    delay(1000);
+  }
+  */
   Serial.begin(115200);
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
@@ -63,9 +69,9 @@ void setup() {
   digitalWrite(LoRaSW,HIGH);
 
   //attachInterrupt(0, GPS,RISING );
-
-  delay(20000) ;                        // 60Sしたら開始
+  
   CoefficientRead() ;
+  delay(20000) ;                        // 60Sしたら開始
 }
 
 void loop() {
@@ -270,11 +276,11 @@ void NichromCut() {
       }
       else if (i==3) {
         digitalWrite(nichrompin1,LOW);
+        Serial.println("nichrom2");
         digitalWrite(nichrompin2,HIGH);
       }
       else if (i==6) {
         digitalWrite(nichrompin2,LOW);
-        Serial.println("nichrom cutting finish");
       }
       
       else if (i==7) {
@@ -283,10 +289,12 @@ void NichromCut() {
       }
       else if (i==10) {
         digitalWrite(nichrompin3,LOW);
-        digitalWrite(nichrompin4,HIGH);   
+        digitalWrite(nichrompin4,HIGH);
+        Serial.println("nichrom4");   
       }
       else if (i==13) {
-        digitalWrite(nichrompin4,LOW);    
+        digitalWrite(nichrompin4,LOW);
+        Serial.println("nichrom cutting finish.");    
       }
             
       delay(1000);
