@@ -1,24 +1,27 @@
 #include <EEPROM.h>
 #define outpin 13
-#define signalpin 2
+#define Reset 12
+#define signalpin 7
+#define XbeeSW 6
 int var;
 int i=0;
 int k=0;
-int wait_time=6;
+int wait_time=17;
 int arming_time=3;
 int nose_up_time=7;
 int throttol_time=0;
 int ch[8]={500,900,0,500,500,500,500,0};
 unsigned long time;
-unsigned long now=0;
+unsigned long Time=0;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Reset");
   var = EEPROM.read(0);
+  Serial.println(var);
   pinMode(outpin,OUTPUT);
+  pinMode(XbeeSW,OUTPUT);
   pinMode(signalpin,INPUT_PULLUP);
-  pinMode(4,INPUT_PULLUP);
+  pinMode(Reset,INPUT_PULLUP);
 }
 
 void loop() {
@@ -26,11 +29,17 @@ void loop() {
       case 0:
       EEPROM.write(0,0);
        Serial.println("case0 wait");
-       while (digitalRead(signalpin) == LOW) {
+       while (digitalRead(signalpin) == HIGH) {
           Serial.println("loop");
           PPM(ch);
         }
-        Serial.println("Hello,world!");
+        Serial.println("放出");
+        digitalWrite(XbeeSW,HIGH);  //ケースからの信号でXbeeの通信開始
+        while (digitalRead(signalpin) == LOW) {
+          Serial.println("loop2");
+          PPM(ch);
+        }
+        Serial.println("一定高度到達");
         while (i<50*wait_time) {
           PPM(ch);
           i++;
@@ -71,15 +80,17 @@ void loop() {
         ch[1]=500; //elevator
         ch[2]=0; //throttol
         ch[7]=1000;
-        now=0;
+        Time=millis();
         while (digitalRead(4)==LOW) {
           EEPROM.write(0,0);
         }
         while(1){
           PPM(ch);
           i ++;
-          if ((millis()-now)/1000>1800) {
+          unsigned long now=millis(); 
+          if ((now-Time)/1000>60) {
             ch[7]=0;//mode==manual
+            Serial.println("Manual");
           }
         }
         break;

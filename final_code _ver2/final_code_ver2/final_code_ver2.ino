@@ -27,8 +27,8 @@ float h_pre=0;              // 1つ前のGPS高度を格納
 boolean FirstReSW = false;  // 放出瞬間の時刻を判定するスイッチ
 boolean ReleaseJg = false;  // ケース放出時にtrue
 
-boolean HightJg = false;    // 2回連続一定高度以下でtrue
-boolean HightSW = false;    // 1回一定高度以下でtrue
+boolean HightJg = true;    // 2回連続一定高度以下でtrue
+boolean HightSW = true;    // 1回一定高度以下でtrue
 boolean GPSSW = false;      // GPS座標送信でtrue
 
 unsigned long now;
@@ -39,12 +39,6 @@ TinyGPSPlus gps;
 SoftwareSerial mySerial(2 ,3); // RX, TX
 
 void setup() {
-  /*
-  pinMode(4,INPUT_PULLUP);
-  while (digitalRead(4)==LOW) {
-    delay(1000);
-  }
-  */
   Serial.begin(115200);
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
@@ -66,27 +60,29 @@ void setup() {
   pinMode(nichrompin4,OUTPUT);
   pinMode(signalpin,OUTPUT);
   pinMode(LoRaSW,OUTPUT);
-  digitalWrite(signalpin,HIGH);
+  digitalWrite(signalpin,LOW);
   digitalWrite(LoRaSW,HIGH);
+
+  //attachInterrupt(0, GPS,RISING );
   
-  CoefficientRead() ;
-  delay(20000) ;                        // 20Sしたら開始
+//  CoefficientRead() ;
+  delay(20000) ;                        // 60Sしたら開始
 }
 
 void loop() {
-  Serial.println("");
+  Serial.println("a");
+  //Serial.print("ReleaseJg=");
+  //Serial.println(ReleaseJg);
   if (ReleaseJg == 0) {
     cdsJg();
     Serial.println("cds_finish");
   }
-  Hight_Judge();
+  //Hight_Judge();
   Time();
   GPS();
   if (ReleaseJg == true) {
-    digitalWrite(signalpin,LOW);       //機体側Arduinoへの放出判定信号
-    digitalWrite(LoRaSW,HIGH);         //LoRa電源ON
-    if (HightJg ==true) {
-      digitalWrite(signalpin,HIGH);    //機体側Arduinoへの高度判定信号
+    //if (HightJg ==true) {
+      digitalWrite(signalpin,HIGH);
       NichromCut();
     }
   }
@@ -266,6 +262,7 @@ void Hight_Judge() {
 //てぐす溶断
 void NichromCut() {
   int case_time = 20;
+  digitalWrite(signalpin,HIGH);           //機体側Arduinoへの信号
   for (int i = 0; i < 26; i++) {
     if (i==0) {
         Serial.println("nichrom cutting start");

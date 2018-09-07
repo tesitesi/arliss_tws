@@ -66,15 +66,19 @@ void setup() {
   pinMode(nichrompin4,OUTPUT);
   pinMode(signalpin,OUTPUT);
   pinMode(LoRaSW,OUTPUT);
-  digitalWrite(signalpin,HIGH);
+  digitalWrite(signalpin,LOW);
   digitalWrite(LoRaSW,HIGH);
+
+  //attachInterrupt(0, GPS,RISING );
   
   CoefficientRead() ;
-  delay(20000) ;                        // 20Sしたら開始
+  delay(20000) ;                        // 60Sしたら開始
 }
 
 void loop() {
-  Serial.println("");
+  Serial.println("a");
+  //Serial.print("ReleaseJg=");
+  //Serial.println(ReleaseJg);
   if (ReleaseJg == 0) {
     cdsJg();
     Serial.println("cds_finish");
@@ -83,10 +87,8 @@ void loop() {
   Time();
   GPS();
   if (ReleaseJg == true) {
-    digitalWrite(signalpin,LOW);       //機体側Arduinoへの放出判定信号
-    digitalWrite(LoRaSW,HIGH);         //LoRa電源ON
     if (HightJg ==true) {
-      digitalWrite(signalpin,HIGH);    //機体側Arduinoへの高度判定信号
+      digitalWrite(signalpin,HIGH);
       NichromCut();
     }
   }
@@ -266,6 +268,7 @@ void Hight_Judge() {
 //てぐす溶断
 void NichromCut() {
   int case_time = 20;
+  digitalWrite(signalpin,HIGH);           //機体側Arduinoへの信号
   for (int i = 0; i < 26; i++) {
     if (i==0) {
         Serial.println("nichrom cutting start");
