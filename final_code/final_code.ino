@@ -19,21 +19,24 @@
 #define nichrompin4 A0
 #define signalpin   6
 #define LoRaSW      7
-#define brightness 600 //放出判定のCdS値
-#define hight 1000     //放出高度
+#define brightness 850  //放出判定のCdS値
+#define hight 3130    //放出高度
 
 float a0, b1, b2, c12;      // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
 float h_pre=0;              // 1つ前のGPS高度を格納
 boolean FirstReSW = false;  // 放出瞬間の時刻を判定するスイッチ
 boolean ReleaseJg = false;  // ケース放出時にtrue
-
 boolean HightJg = false;    // 2回連続一定高度以下でtrue
 boolean HightSW = false;    // 1回一定高度以下でtrue
 boolean GPSSW = false;      // GPS座標送信でtrue
+boolean GPS2SW = false;
 
 unsigned long now;
 unsigned long time;
 unsigned long Press, Temp;  // 圧力および温度の変換値を保存する変数
+
+static double d, e, f;
+static char g;
 
 TinyGPSPlus gps;
 SoftwareSerial mySerial(2 ,3); // RX, TX
@@ -66,38 +69,43 @@ void setup() {
   pinMode(nichrompin4,OUTPUT);
   pinMode(signalpin,OUTPUT);
   pinMode(LoRaSW,OUTPUT);
-  digitalWrite(signalpin,HIGH);
-  digitalWrite(LoRaSW,HIGH);
+  digitalWrite(signalpin,LOW);
+  digitalWrite(LoRaSW,LOW);
   
   CoefficientRead() ;
-  delay(20000) ;                        // 20Sしたら開始
+  delay(600000) ;                        // 10mしたら開始
 }
 
 void loop() {
+  
   Serial.println("");
   if (ReleaseJg == 0) {
     cdsJg();
-    Serial.println("cds_finish");
+    //Serial.println("cds_finish");
   }
+  //Serial.println(digitalRead(LoRaSW));
   Hight_Judge();
   Time();
   GPS();
-  if (ReleaseJg == true) {
-    digitalWrite(signalpin,LOW);       //機体側Arduinoへの放出判定信号
-    digitalWrite(LoRaSW,HIGH);         //LoRa電源ON
-    if (HightJg ==true) {
+  if (ReleaseJg == true) { 
+    digitalWrite(LoRaSW,HIGH);    //LoRa電源ON
+    if (HightJg == true) {
       digitalWrite(signalpin,HIGH);    //機体側Arduinoへの高度判定信号
       NichromCut();
     }
   }
+  
+ // GPS2();
+ // delay(1000);
 }
 /*
  * ケース放出判定
  */
 void cdsJg() {
   int i=0;
-  while (i<3) {
-    Serial.println(analogRead(cds_Pin));
+  while (i<10) {
+    //Serial.println(analogRead(cds_Pin));
+    //Serial.println(digitalRead(LoRaSW));
     if (analogRead(cds_Pin) > brightness) {
       if (FirstReSW==false) {
       now=millis();
@@ -112,12 +120,13 @@ void cdsJg() {
      // GPS();
       FirstReSW=false;
       delay(1000);
-    }
-    ReleaseJg = true;
+    }   
   }
   //now = millis()-10000; //放出時の時間を記録
   //Serial.print("now=");
-
+  digitalWrite(LoRaSW,HIGH);    //LoRa電源ON
+  delay(10000);
+  ReleaseJg = true;
 }
 
 float alt_() {
@@ -258,7 +267,7 @@ void Hight_Judge() {
     Serial.println("除外あり");
     HightSW = false;
   }
-  Serial.println(h);
+ // Serial.print(h);
   h_pre = h;
   delay(1000);
 }
@@ -266,7 +275,7 @@ void Hight_Judge() {
 //てぐす溶断
 void NichromCut() {
   int case_time = 20;
-  for (int i = 0; i < 26; i++) {
+  for (int i = 0; i < 32; i++) {
     if (i==0) {
         Serial.println("nichrom cutting start");
         digitalWrite(nichrompin1,HIGH);
@@ -291,19 +300,35 @@ void NichromCut() {
         digitalWrite(nichrompin2,LOW);
       }
       else if (i==17) {
-        digitalWrite(nichrompin3,HIGH); 
-        digitalWrite(nichrompin4,HIGH); 
-        Serial.println("nichrom3,4 high");  
+        digitalWrite(nichrompin3,HIGH);  
+        Serial.println("nichrom3 high");  
+      }
+      else if (i==21) {
+        digitalWrite(nichrompin3,LOW);
+        digitalWrite(nichrompin4,HIGH);
+        Serial.println("nichrom4 high."); 
+        GPS2();
       }
       else if (i==25) {
-        digitalWrite(nichrompin3,LOW);
         digitalWrite(nichrompin4,LOW);
-        Serial.println("nichrom cutting finish."); 
-      }   
+        digitalWrite(nichrompin3,HIGH);
+        Serial.println("nichrom3 high");
+      }
+      else if (i==29) {
+        digitalWrite(nichrompin3,LOW);
+        digitalWrite(nichrompin4,HIGH);
+        Serial.println("nichrom4 high");
+      }
+      else if (i==31) {
+        digitalWrite(nichrompin4,LOW);
+        Serial.println("nichrom cutting finish");
+      }
       delay(1000);
   }
   while (1) {
     GPS();
+    delay(1000);
+    GPS2();
     delay(1000);  
   }
 }
@@ -317,10 +342,11 @@ void GPS() {
       //Serial.print(c);
       gps.encode(c); 
       if (gps.location.isUpdated()){
-        Serial.print("LAT="); Serial.println(gps.location.lat(), 6);
-        Serial.print("LONG="); Serial.println(gps.location.lng(), 6);
-        Serial.print("ALT="); Serial.println(gps.altitude.meters());
+        Serial.print("LAT="); Serial.print(gps.location.lat(), 6);
+        Serial.print(", LONG="); Serial.print(gps.location.lng(), 6);
+        Serial.print(", ALT="); Serial.println(gps.altitude.meters());
         GPSSW=true;
+        //Serial.println(sizeof(gps.location.lat(), 6));
       }
       //GPS no fixの時抜け出し
       if (millis()-t>1000) {
@@ -331,11 +357,50 @@ void GPS() {
   }     
 }
 
+void GPS2() {
+  unsigned long t=millis();
+  GPSSW=false;
+  while (GPSSW==false) {
+    if (GPS2SW==false) {
+    while (mySerial.available() > 0){
+        g = mySerial.read();
+        //Serial.print(c);
+        
+      gps.encode(g); 
+      if (gps.location.isUpdated()){
+        Serial.print("CUTTING LAT="); Serial.print(gps.location.lat(), 6);
+        Serial.print(", LONG="); Serial.print(gps.location.lng(), 6);
+        Serial.print(", ALT="); Serial.println(gps.altitude.meters());
+        GPSSW=true;
+        GPS2SW=true;
+      } 
+      d=gps.location.lat(), 6;
+      e=gps.location.lng(), 6;
+      f=gps.altitude.meters();     
+    }
+    }
+    else {
+      gps.encode(g);
+      Serial.print("CUTTING LAT="); Serial.print(d);
+      Serial.print(", LONG="); Serial.print(e);
+      Serial.print(", ALT="); Serial.println(f);
+      GPSSW=true;
+    }
+      //GPS no fixの時抜け出し
+      if (millis()-t>1000) {
+        //Serial.println("GPS no fix");
+        GPSSW=true;
+      }
+    }
+  }     
+
+
 //放出から一定時間で強制的に展開シーケンスへ移行
 void Time() {
   if (ReleaseJg==true) {
    // Serial.println(millis()-now);
-    if (millis()-now > 60000) {
+    if (millis()-now > 200000
+    ) {
       HightJg=true;
       Serial.println("Timer");
     }

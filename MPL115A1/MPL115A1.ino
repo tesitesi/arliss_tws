@@ -3,6 +3,7 @@
 float a0 , b1 , b2 , c12 ;
 #define AVE_NUM      20                   // 圧力・温度のＡ／Ｄ変換値を平均化する回数
 #define H_CORRECT   0                    // 自宅でのセンサと実際の高度差補正値(My自宅の標高は100m)
+#define cds_Pin A7
 
 unsigned long Press , Temp ;              // 圧力および温度の変換値を保存する変数
 
@@ -15,12 +16,14 @@ void setup()
      SPI.setBitOrder(MSBFIRST) ;          // ビットオーダー
      SPI.setClockDivider(SPI_CLOCK_DIV4) ;// クロック(CLK)をシステムクロックの1/4で使用(16MHz/4)
      SPI.setDataMode(SPI_MODE0) ;         // クロック極性０(LOW)　クロック位相１(HIGH)
+     pinMode(cds_Pin, INPUT);
 
-     delay(3000) ;                        // 3Sしたら開始
+     delay(1000) ;                        // 1Sしたら開始
      CoefficientRead() ;                  // メモリーマップから係数を読み出して置く
 }
 void loop() {
  GPS(); 
+ Serial.println(analogRead(cds_Pin));
 }
 float GPS()
 {
@@ -134,6 +137,6 @@ float AltitudeCalc(float pressure,int Difference)
      float h ;
 
      h = 44330.8 * (1.0 - pow( (pressure/1013.25) ,  0.190263 )) ;
-     h = h + Difference ;
+     h = h + Difference-40 ;
      return h ;
 }
